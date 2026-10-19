@@ -44,7 +44,10 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 vim +PlugInstall +qall
 ```
-
+Alternatively, if you have the AUR avaliable (which you almost certainlly do on Arch),  you can just install `vim-plug` with yay:
+```sh
+yay -S vim-plug
+``
 The Rosé Pine Vim theme is installed by `vim-plug`. Open Vim to use it. The Zsh config is active in new shells; to make Zsh your login shell, run:
 
 ```sh
