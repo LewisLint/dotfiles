@@ -19,6 +19,12 @@ sudo pacman -S go gopls go-tools
 
 `go-tools` provides `goimports` on Arch. If you only want the editor theme and do not need Go support, you can omit the Go tools, but the Vim-Go plugin's post-install command may not complete.
 
+Install the go plugins:
+```sh
+go install golang.org/x/tools/gopls@latest
+go install golang.org/x/tools/cmd/goimports@latest
+```
+
 ## Install the Rosé Pine setup
 
 Clone the repository:
