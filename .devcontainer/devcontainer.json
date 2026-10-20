@@ -1,18 +1,17 @@
 {
   "name": "Arch BTW",
   "build": {
-    "dockerfile": "Dockerfile",
-    "context": ".."
+    "dockerfile": "Dockerfile"
   },
-  "remoteUser": "vscode",
+  "remoteUser": "codespace",
+  "updateRemoteUserUID": true,
   "customizations": {
     "vscode": {
       "settings": {
         "terminal.integrated.defaultProfile.linux": "zsh",
         "terminal.integrated.profiles.linux": {
           "zsh": {
-            "path": "/usr/bin/zsh",
-            "args": ["-l"]
+            "path": "/bin/zsh"
           }
         }
       }
