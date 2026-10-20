@@ -220,3 +220,5 @@ let g:lsp_completion_documentation_enabled = 0
 
 
 " run curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" go install golang.org/x/tools/gopls@latest
+" go install golang.org/x/tools/cmd/goimports@latest
