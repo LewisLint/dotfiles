@@ -186,7 +186,7 @@ autocmd BufWinEnter,Syntax * RainbowToggleOn
 
 
 
-set viminfo='10
+
 
 augroup remember_cursor_position
     autocmd!
