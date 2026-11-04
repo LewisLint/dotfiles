@@ -22,12 +22,13 @@ if (( EUID == 0 )); then
 fi
 
 for config in .vimrc .zshrc; do
-    if [[ -f "$repo_dir/$config" ]]; then
-        cp --backup=numbered -- "$repo_dir/$config" "$HOME/$config"
-    fi
+    [[ -f "$repo_dir/$config" ]] || continue
+    [[ "$(readlink -f -- "$HOME/$config")" == "$repo_dir/$config" ]] && continue
+    ln -sfn --backup=numbered -- "$repo_dir/$config" "$HOME/$config"
 done
 
-sudo pacman -Syu --needed --noconfirm base-devel git go gopls go-tools vim
+sudo pacman -Syu --needed --noconfirm base-devel git go gopls go-tools vim zsh 
+sudo pacman -S zsh-history-substring-search zsh-syntax-highlighting
 
 if ! command -v yay >/dev/null 2>&1; then
     build_dir="$(mktemp -d)"
