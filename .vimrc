@@ -4,7 +4,6 @@
 " =========================
 
 set nocompatible
-
 " --- Basic ---
 " --- ALE ---
 let g:go_highlight_fields = 1
@@ -14,6 +13,15 @@ let g:go_highlight_functions = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_types = 1
 syntax on
+
+" --- Improved Command-line Completion ---
+set wildmenu
+set wildmode=longest:full,full
+
+" --- Smart Case Sensitivity ---
+set ignorecase
+set smartcase
+
 
 set signcolumn=yes
 set number
@@ -91,12 +99,17 @@ let g:lsp_semantic_enabled = 1
 let g:lsp_semantic_delay = 0
 
 call plug#begin('~/.vim2/plugged')
+
 Plug 'rose-pine/vim'
 Plug 'dense-analysis/ale'
 Plug 'luochen1990/rainbow'
 Plug 'jiangmiao/auto-pairs'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'tpope/vim-commentary'
+Plug 'voldikss/vim-floaterm'
 call plug#end()
+
 
 " Keep vim-go's syntax, but let ALE own Go diagnostics and formatting.
 let g:go_gopls_enabled = 0
@@ -118,13 +131,13 @@ highlight goLabel guifg=#c4a7e7 ctermfg=Magenta
 highlight goDeclaration guifg=#c4a7e7 ctermfg=Magenta gui=bold cterm=bold
 highlight goTypeDecl guifg=#c4a7e7 ctermfg=Magenta gui=bold cterm=bold
 highlight goFunction guifg=#9ccfd8 ctermfg=Cyan gui=bold cterm=bold
-highlight goFunctionCall guifg=#9ccfd8 ctermfg=Cyan
-highlight goBuiltins guifg=#9ccfd8 ctermfg=Cyan
+highlight goFunctionCall guifg=#9ccfd8 ctermfg=Cyan gui=bold cterm=bold
+highlight goBuiltins guifg=#9ccfd8 ctermfg=Cyan gui=bold cterm=bold
 highlight goField guifg=#ebbcba ctermfg=LightRed
 highlight goParamName guifg=#ebbcba ctermfg=LightRed
-highlight goType guifg=#31748f ctermfg=Blue
+highlight goType guifg=#31748f ctermfg=Blue gui=bold cterm=bold
 highlight goTypeName guifg=#31748f ctermfg=Blue gui=bold cterm=bold
-highlight goTypeConstructor guifg=#31748f ctermfg=Blue
+highlight goTypeConstructor guifg=#31748f ctermfg=Blue gui=bold cterm=bold
 highlight goString guifg=#f6c177 ctermfg=Yellow
 highlight goRawString guifg=#f6c177 ctermfg=Yellow
 highlight goComment guifg=#6e6a86 ctermfg=DarkGray
@@ -186,7 +199,7 @@ autocmd BufWinEnter,Syntax * RainbowToggleOn
 
 
 
-set viminfo='10
+
 
 augroup remember_cursor_position
     autocmd!
@@ -195,11 +208,14 @@ augroup END
 highlight LspSemanticVariable guifg=#ebbcba ctermfg=LightRed
 highlight LspSemanticProperty guifg=#ebbcba ctermfg=LightRed
 highlight LspSemanticParameter guifg=#ebbcba ctermfg=LightRed
-highlight LspSemanticFunction guifg=#9ccfd8 ctermfg=Cyan
-highlight LspSemanticMethod guifg=#9ccfd8 ctermfg=Cyan
-highlight LspSemanticType guifg=#31748f ctermfg=Blue
+highlight LspSemanticFunction guifg=#9ccfd8 ctermfg=Cyan gui=bold cterm=bold
+highlight LspSemanticMethod guifg=#9ccfd8 ctermfg=Cyan gui=bold cterm=bold
+highlight LspSemanticType guifg=#31748f ctermfg=Blue gui=bold cterm=bold
 highlight LspSemanticString guifg=#f6c177 ctermfg=Yellow
 highlight LspSemanticNumber guifg=#c4a7e7 ctermfg=Magenta
+
+set completeopt=menuone,noselect,noinsert
+
 let g:lsp_document_highlight_enabled = 1
 let g:lsp_document_highlight_delay = 0
 " Completion menu
@@ -212,13 +228,85 @@ highlight Pmenu      guibg=#1f1d2e guifg=#e0def4
 highlight PmenuSel   guibg=#31748f guifg=#e0def4 gui=bold
 
 " Slight transparency
-set pumheight=12
+set pumheight=3
 highlight PmenuSbar guibg=#26233a
 highlight PmenuThumb guibg=#9ccfd8
 let g:lsp_completion_documentation_enabled = 0
+
+" --- Ctrl+j / Ctrl+k Completion Controls ---
+" Ctrl+j to go down the list, Ctrl+k to go up
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+
+" Enter selects the item and closes the menu cleanly
+inoremap <expr> <CR>  pumvisible() ? "\<C-y>" : "\<CR>"
+let g:ale_completion_enabled = 1
+" Automatically show pmenu, insert the match inline, and don't auto-select
+
+" Automatically trigger Go omni-completion as you type
+autocmd FileType go autocmd TextChangedI <buffer> if !pumvisible() | call feedkeys("\<C-x>\<C-o>", 'n') | endif
+
+" Use Tab to cycle down, Shift-Tab to cycle up the pmenu
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
 " run go install golang.org/x/tools/cmd/goimports@latest
 
 
 " run curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 " go install golang.org/x/tools/gopls@latest
 " go install golang.org/x/tools/cmd/goimports@latest
+" " 1. Force Vim to look for filetype plugins
+filetype plugin on
+
+" 2. Manually assign Go's built-in completion if Vim missed it
+autocmd FileType go setlocal omnifunc=go#complete#Complete
+
+" 3. Smart Tab: If pmenu is open, cycle down.
+"    If omnifunc is set, trigger it.
+"    Otherwise, fall back to standard keyword completion (Ctrl+N).
+
+
+
+"inoremap <expr> <Tab> pumvisible() ? "\<C-n>" :
+"      \ (&omnifunc != "") ? "\<C-x>\<C-o>" : "\<Tab>"
+"
+" --- Smart Tab: Cycle pmenu if visible, otherwise insert a normal Tab ---
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" 4. Shift-Tab to cycle backward
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+
+
+
+" --- Jump to errors instantly ---
+nnoremap <leader>e :ALENextWrap<CR>
+nnoremap <leader>E :ALEPreviousWrap<CR>
+
+" --- Highlight modified text lines natively ---
+" This enables highlight for changed text within the current buffer session
+highlight ModifiedLineNr ctermfg=Yellow guifg=#f6c177 gui=bold
+
+" You can use Vim's built-in diff/change tracking or jump to changes with:
+" g; - go to older position in change list
+" g, - go to newer position in change list
+" 
+
+
+" open a terminal in vim
+" --- Toggle floating terminal with <space>t ---
+nnoremap <silent> <leader>t :FloatermToggle<CR>
+tnoremap <silent> <leader>t <C-\><C-n>:FloatermToggle<CR>
+j
+
+" --- Floaterm Customization Examples ---
+let g:floaterm_width = 0.5    
+let g:floaterm_height =0.5     
+let g:floaterm_position = 'topright' " Can also be 'top', 'bottom', 'left', 'right', 'topleft', etc.
+let g:floaterm_borderchars = '─│─│╭╮╯╰' " Custom border style if you want to tweak the look
+" --- Style Floaterm borders to match transparency ---
+highlight Floaterm guibg=NONE ctermbg=NONE
+highlight FloatermBorder guifg=#9ccfd8 guibg=NONE ctermfg=Green ctermbg=NONE
+highlight NormalFloat guibg=NONE ctermbg=NONE
+
+ 

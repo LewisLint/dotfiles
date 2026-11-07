@@ -6,13 +6,12 @@
 #setopt histignorealldups sharehistory
 
 # Use emacs keybindings even if our EDITOR is set to vi
-bindkey -v
-ZSH_THEME="gruvbox"
 # Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
 HISTSIZE=1000
 SAVEHIST=1000
 HISTFILE=~/.zsh_history
 
+setopt PROMPT_SUBST
 # Use modern completion system
 autoload -Uz compinit
 compinit
@@ -38,9 +37,10 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
-alias ls="ls -a --colo=auto"
 alias ll="ls -la"
-alias v="vi"
+alias v="vim"
+alias l="ls"
+alias x="exit"
 alias '^l'="clear"
 alias '~'="cd ~"
 alias 'vzsh'="v ~/.zshrc && source ~/.zshrc"
@@ -55,7 +55,6 @@ alias ig='ristretto *'
 #}
 #bindkey -M viins 'jj' vicmd
 
-bindkey -s '^L' 'clear && printf "\\e[3J"\n'
 #bindkey -s '^A' 'sudo '
 #Enable Vi Mode
 bindkey -v
@@ -91,7 +90,7 @@ add-zsh-hook precmd _set_cursor_bar
 # Detect mode changes and swap the RPROMPT character/color
 
 
-RPROMPT="%F{blue}I%f"
+RPROMPT="%F{blue}\x1b[1mI%f"
 
 
 function zle-keymap-select() {
@@ -113,9 +112,9 @@ zle -N zle-line-init
 KEYTIMEOUT=15
 
 bindkey -M vicmd '?' history-incremental-search-backward
-#bindkey -v # Enables vim mode
 alias ytdlp='yt-dlp -f "best[height<=720]" --impersonate chrome --cookies-from-browser chromium'
 alias py="python"
+alias c=" clear"
 
 
 
@@ -126,10 +125,8 @@ alias py="python"
 
 alias clear="clear"
 # Enable prompt expansion so functions run inside the prompt
-setopt PROMPT_SUBST
 
 # Enable vim keybindings
-bindkey -v
 
 # Function to build the conditional arrow and exit code
 build_arrow() {
@@ -139,15 +136,30 @@ build_arrow() {
         echo "%F{green}❯%f"
     else
         # Failure: Red exit code followed by a Red arrow
-        echo "%F{red} $exit_code ❯%f"
+        echo "%F{red}$exit_code ❯%f"
     fi
 }
 
 # Construct the final prompt
-PROMPT='%F{blue}%~%f $(build_arrow) '
+
+
+autoload -Uz vcs_info
+precmd() { vcs_info }
+zstyle ':vcs_info:git:*' formats '(%b)'
+
+PROMPT='%F{#9CCFD8}%B%~%b%f $(build_arrow) '
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt INC_APPEND_HISTORY
+setopt AUTO_CD
+setopt AUTO_PUSHD
+setopt PUSHD_IGNORE_DUPS
+
 
 # aliases:
 alias ls='ls -aFBh --color=auto'
+alias ll='ls -l'
 if [ "$USER" = "root" ]; then
     # --- Root Warning ---
     print -P ""
@@ -222,3 +234,68 @@ if [ "$USER" = "root" ]; then
     # --- Root Sudo Prompt ---
     export SUDO_PROMPT="[ROOT ACCESS] Password for %u: "
 fi
+
+
+
+autopair_plugin="$HOME/.zsh/plugins/zsh-autopair/autopair.zsh"
+[[ -r "$autopair_plugin" ]] && source "$autopair_plugin"
+# Rosé Pine color mapping for zsh-syntax-highlighting
+# type sudo pacman -S zsh-history-substring-search zsh-syntax-highlighting
+typeset -A ZSH_HIGHLIGHT_STYLES
+
+# Base text colors (Foam / Iris / Pine)
+ZSH_HIGHLIGHT_STYLES[command]='fg=116,bold'  
+ZSH_HIGHLIGHT_STYLES[alias]='fg=116'         
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=182,italic'
+ZSH_HIGHLIGHT_STYLES[function]='fg=182,bold' 
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=31,bold'
+
+# Misspelled or invalid commands (Love)
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=210'
+
+# Arguments and Options (Gold / Rose / Muted)
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=216,bold'
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=216,bold'
+ZSH_HIGHLIGHT_STYLES[string]='fg=181,bold'              
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=216'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=216'
+ZSH_HIGHLIGHT_STYLES[path]='fg=116,underline'
+
+# Comments (Muted)
+#ZSH_HIGHLIGHT_STYLES[comment]='fg=243,italic'
+
+
+
+source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+bindkey '^[k' history-substring-search-up
+bindkey '^[j' history-substring-search-down
+bindkey '˚' history-substring-search-up
+bindkey '∆' history-substring-search-down
+# ZLE BULLSHIT -- 
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^[;' edit-command-line
+bindkey '…' edit-command-line
+
+
+export EDITOR=vim
+export VISUAL=vim
+
+last-arg() {
+    LBUFFER+="${(Q)${(z)history[$((HISTCMD-1))]}[-1]}"
+}
+
+zle -N last-arg
+bindkey '\e.' last-arg
+bindkey '≥' last-arg
+
+setopt HIST_IGNORE_SPACE
+zshaddhistory() {
+    [[ "$1" == "clear" || "$1" == "c" ]] && return 1
+    return 0
+}
+
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+

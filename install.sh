@@ -40,6 +40,11 @@ if ! command -v yay >/dev/null 2>&1; then
         makepkg -si --noconfirm
     )
 fi
+plugin_dir="$HOME/.zsh/plugins/zsh-autopair"
+if [[ ! -d "$plugin_dir" ]]; then
+    mkdir -p "$HOME/.zsh/plugins"
+    git clone --depth=1 https://github.com/hlissner/zsh-autopair.git "$plugin_dir"
+fi
 
 yay -S --needed --noconfirm vim-plug
 vim +PlugInstall +qall
