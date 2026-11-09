@@ -299,3 +299,17 @@ zshaddhistory() {
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 
+# i fucking hate python but we gotta add it to path for some pip packages
+
+if [ -d "$HOME/.local/bin" ] ; then
+  PATH="$PATH:$HOME/.local/bin"
+fi
+
+alias sh='sh -l'
+
+case "$(tty 2>/dev/null)" in
+    /dev/tty/[0-9]*)
+        # Linux virtual console
+        sh
+        ;;
+esac
