@@ -357,7 +357,7 @@ hl.bind(mainMod .. " + " .. "W", hl.dsp.window.close())
 
 hl.bind(mainMod .. " + " .. "M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"))
 
-hl.bind(mainMod .. " + " .. "kitte -e ranger", hl.dsp.exec_cmd("thunar"))
+hl.bind(mainMod .. " + " .. "T", hl.dsp.exec_cmd("kitte -e ranger"))
 
 
 --bind = $mainMod, R, exec, $menu
