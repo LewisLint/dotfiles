@@ -351,23 +351,20 @@ local mainMod = "SUPER"
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Binds/ for more
 
-hl.bind(mainMod .. " + " .. "Q", hl.dsp.exec_cmd("ghostty"))
+hl.bind(mainMod .. " + " .. "O", hl.dsp.exec_cmd("kitty"))
 
 hl.bind(mainMod .. " + " .. "W", hl.dsp.window.close())
 
 hl.bind(mainMod .. " + " .. "M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"))
 
-hl.bind(mainMod .. " + " .. "E", hl.dsp.exec_cmd("thunar"))
+hl.bind(mainMod .. " + " .. "kitte -e ranger", hl.dsp.exec_cmd("thunar"))
 
-hl.bind(mainMod .. " + " .. "V", hl.dsp.window.float())
 
 --bind = $mainMod, R, exec, $menu
 
-hl.bind(mainMod .. " + " .. "P", hl.dsp.window.pseudo())
-
 -- dwindle
 
-hl.bind(mainMod .. " + " .. "J", hl.dsp.layout("togglesplit"))
+-- hl.bind(mainMod .. " + " .. "J", hl.dsp.layout("togglesplit"))
 
 -- dwindle
 
@@ -381,9 +378,9 @@ hl.bind(mainMod .. " + " .. "up", hl.dsp.focus({ direction = "up" }))
 
 hl.bind(mainMod .. " + " .. "down", hl.dsp.focus({ direction = "down" }))
 
-hl.bind(mainMod .. " + " .. "l", hl.dsp.focus({ direction = "left" }))
+hl.bind(mainMod .. " + " .. "h", hl.dsp.focus({ direction = "left" }))
 
-hl.bind(mainMod .. " + " .. "h", hl.dsp.focus({ direction = "right" }))
+hl.bind(mainMod .. " + " .. "l", hl.dsp.focus({ direction = "right" }))
 
 hl.bind(mainMod .. " + " .. "k", hl.dsp.focus({ direction = "up" }))
 
@@ -695,11 +692,11 @@ hl.bind(mainMod .. " + " .. "F", hl.dsp.window.fullscreen())
 
 hl.bind(mainMod .. " + " .. "Space", hl.dsp.window.float())
 
-hl.bind(mainMod .. " + " .. "shift" .. " + " .. "f", hl.dsp.exec_cmd("chromium"))
+-- hl.bind(mainMod .. " + " .. "shift" .. " + " .. "f", hl.dsp.exec_cmd("chromium"))
 
-hl.bind(mainMod .. " + " .. "shift" .. " + " .. "l", hl.dsp.exec_cmd("luakit"))
+-- hl.bind(mainMod .. " + " .. "shift" .. " + " .. "l", hl.dsp.exec_cmd("luakit"))
 
-hl.bind(mainMod .. " + " .. "shift" .. " + " .. "a", hl.dsp.exec_cmd("sklauncher -Djava.net.preferIPv4Stack=true"))
+hl.bind(mainMod .. " + " .. "shift" .. " + " .. "y", hl.dsp.exec_cmd("sklauncher -Djava.net.preferIPv4Stack=true"))
 
 hl.bind(mainMod .. " + " .. "r", hl.dsp.exec_cmd("hyprctl reload"))
 
@@ -709,13 +706,13 @@ hl.bind(mainMod .. " + " .. "r", hl.dsp.exec_cmd("hyprctl reload"))
 
 --bind = $mainMod, t, exec, /home/lewislint/crackedlaunchers/PrismLauncher-Linux-x86_64.AppImage
 
-hl.bind(mainMod .. " + " .. "z", hl.dsp.exec_cmd("steam"))
+hl.bind(mainMod .. " + " .. "s", hl.dsp.exec_cmd("steam"))
 
 --bind = $mainMod, d, exec, /home/lewislint/WarThunder/launcher
 
-hl.bind(mainMod .. " + " .. "mouse:276", hl.dsp.window.fullscreen())
+-- hl.bind(mainMod .. " + " .. "mouse:276", hl.dsp.window.fullscreen())
 
-hl.bind(mainMod .. " + " .. "mouse:275", hl.dsp.window.float())
+-- hl.bind(mainMod .. " + " .. "mouse:275", hl.dsp.window.float())
 
 --bind = SUPER, grave, exec, grim ~/Screenshots/$(date +'%Y%m%d_%H_%M_%S_%N').png
 
